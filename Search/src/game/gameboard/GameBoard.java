@@ -85,20 +85,20 @@ public class GameBoard {
 	}
 	
 	
-	public GameBoard actionResult(String action) throws Exception{
+	public GameBoard actionResult(int action){
 		GameBoard gbCopy = new GameBoard(gamePieces);
-		int[][] pos = Action.parseString(action);
-		if(pos == null) {
-			throw new Exception();
-		}
+
 		return gbCopy;
 	}
 	
-	public ArrayList<String> evaluate(){
-		ArrayList<String> possibleActions = new ArrayList<>();
+	public ArrayList<Integer> evaluate(){
+		ArrayList<Integer> possibleActions = new ArrayList<>();
 		for(int r = 0; r < 8; r++) {
 			for (int c = 0; c < 8; c++) {
-				
+				// TODO 
+				if(true) {
+					possibleActions.add(r * 8 + c);
+				}
 			}
 		}
 		return possibleActions;

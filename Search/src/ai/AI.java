@@ -10,20 +10,19 @@ public class AI {
 		
 	}
 	
-	public String miniMaxDecision(GameBoard gameBoard) {
-		ArrayList<String> possibleActions = gameBoard.evaluate();
+	public int miniMaxDecision(GameBoard gameBoard) {
+		ArrayList<Integer> possibleActions = gameBoard.evaluate();
 		int maxValue = 0;
-		String maxAction = "";
-		for (String action : possibleActions) {
-			try {
-				if (minValue(gameBoard.actionResult(action)) > maxValue) {
-					maxAction = action;
-				}
-			} catch (Exception e) {
-				
+		int maxAction = -1;
+		int testValue;
+		for (int action : possibleActions) {
+			testValue = minValue(gameBoard.actionResult(action));
+			if (testValue > maxValue) {
+				maxValue = testValue;
+				maxAction = action;
 			}
 		}
-		return "";
+		return maxAction;
 	}
 	
 	private int maxValue(GameBoard gameBoard) {
