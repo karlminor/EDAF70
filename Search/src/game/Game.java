@@ -35,7 +35,7 @@ public class Game {
 			playStates[1] = playerTurnState;
 		}
 		int i = 0;
-		while(!evaluate()) {
+		while(!gameBoard.evaluate().isEmpty()) {
 			currentState.setState(playStates[i]);
 			currentState.execute();
 			i = 1-i;

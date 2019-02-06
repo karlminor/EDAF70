@@ -1,5 +1,7 @@
 package game.gameboard;
 
+import java.util.ArrayList;
+
 public class GameBoard {
 	public final static int EMPTY = 0;
 	public final static int WHITE = 1;
@@ -16,6 +18,10 @@ public class GameBoard {
 				gamePieces[r][c] = GameBoard.EMPTY;
 			}
 		}
+	}
+	
+	public GameBoard(int[][] gamePieces) {
+		this.gamePieces = gamePieces;
 	}
 	
 	public boolean add(int row, int col, int color) {
@@ -76,5 +82,25 @@ public class GameBoard {
 			break;
 		}
 		System.out.print("|");
+	}
+	
+	
+	public GameBoard actionResult(String action) throws Exception{
+		GameBoard gbCopy = new GameBoard(gamePieces);
+		int[][] pos = Action.parseString(action);
+		if(pos == null) {
+			throw new Exception();
+		}
+		return gbCopy;
+	}
+	
+	public ArrayList<String> evaluate(){
+		ArrayList<String> possibleActions = new ArrayList<>();
+		for(int r = 0; r < 8; r++) {
+			for (int c = 0; c < 8; c++) {
+				
+			}
+		}
+		return possibleActions;
 	}
 }
