@@ -10,8 +10,8 @@ public class AI {
 		
 	}
 	
-	public int miniMaxDecision(GameBoard gameBoard) {
-		ArrayList<Integer> possibleActions = gameBoard.evaluate();
+	public int miniMaxDecision(GameBoard gameBoard, int color) {
+		ArrayList<Integer> possibleActions = gameBoard.evaluate(color);
 		int maxValue = 0;
 		int maxAction = -1;
 		int testValue;

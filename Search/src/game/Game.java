@@ -1,20 +1,25 @@
 package game;
 
+import ai.AI;
 import controller.Controller;
+import game.gameboard.Action;
 import game.gameboard.GameBoard;
 import game.states.*;
 
 public class Game {
 	GameBoard gameBoard;
 	Controller controller;
+	AI ai;
 	State currentState;
 	State playerTurnState;
 	State oppTurnState;
-	State setupState;
+	Setup setupState;
+	boolean turnUnavailable;
 	
 	public Game() {
 		this.controller = new Controller();
 		gameBoard = new GameBoard();
+		ai = new AI();
 		
 		currentState = new CurrentState();
 		setupState = new Setup(controller, gameBoard);
@@ -22,9 +27,8 @@ public class Game {
 	}
 	
 	public void start() {
-		CurrentState currentState = new CurrentState();
-		currentState.setState(setupState);
-		currentState.execute();
+		setupState.execute();
+		
 		playerTurnState = new PlayerTurn(controller, gameBoard, gameBoard.playerColor);
 		oppTurnState = new OpponentTurn(controller, gameBoard, gameBoard.opponentColor);
 		State[] playStates = new State[2];
@@ -35,15 +39,28 @@ public class Game {
 			playStates[1] = playerTurnState;
 		}
 		int i = 0;
-		while(!gameBoard.evaluate().isEmpty()) {
+		/*for (int gbc : gameBoard.evaluate(GameBoard.BLACK)) {
+			System.out.println(gbc);
+			System.out.println(Action.parseInt(gbc));
+			System.out.println(Action.parseString(Action.parseInt(gbc)));
+		}*/
+		CurrentState currentState = new CurrentState();
+		turnUnavailable = false;
+		while(true) {
+			System.out.println("ny turn");
+			System.out.println(i);
 			currentState.setState(playStates[i]);
-			currentState.execute();
+			if(currentState.execute()) {
+				System.out.println("player turn");
+				turnUnavailable = false;
+			} else if (turnUnavailable){
+				break;
+			} else {
+				turnUnavailable = true;
+			}
 			i = 1-i;
 		}
 	}
 	
-	//check if the game has been won
-	public boolean evaluate() {
-		return true;
-	}
+
 }

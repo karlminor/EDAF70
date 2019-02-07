@@ -3,7 +3,7 @@ package game.states;
 import controller.Controller;
 import game.gameboard.GameBoard;
 
-public class Setup implements State{
+public class Setup{
 	private Controller controller;
 	private GameBoard gameBoard;
 	
@@ -12,7 +12,6 @@ public class Setup implements State{
 		this.gameBoard = gameBoard;
 	}
 
-	@Override
 	public void execute() {
 		System.out.print("Welcome to Reversi!\n"
 				+ "Please note that white is represented as O and black is represented as X.\n");
@@ -30,11 +29,12 @@ public class Setup implements State{
 	}
 	
 	public void gameBoardSetup() {
-		gameBoard.add(3, 3, GameBoard.WHITE);
-		gameBoard.add(3, 4, GameBoard.BLACK);
-		gameBoard.add(4, 3, GameBoard.BLACK);
-		gameBoard.add(4, 4, GameBoard.WHITE);
+		gameBoard.update(3, 3, GameBoard.WHITE);
+		gameBoard.update(3, 4, GameBoard.BLACK);
+		gameBoard.update(4, 3, GameBoard.BLACK);
+		gameBoard.update(4, 4, GameBoard.WHITE);
 	}
+
 	
 
 }

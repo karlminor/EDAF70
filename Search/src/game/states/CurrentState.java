@@ -8,12 +8,16 @@ public class CurrentState implements State {
 	}
 	
 	public State getState() {
-		return this.currentState;
+		return currentState;
+	}
+	
+	public int getColor() {
+		return currentState.getColor();
 	}
 
-	@Override
-	public void execute() {
-		this.currentState.execute();
+	public boolean execute() {
+		System.out.println("currentstate execute");
+		return currentState.execute();
 	}
 
 }

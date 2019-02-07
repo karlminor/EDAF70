@@ -3,7 +3,8 @@ package game.states;
 
 public interface State {
 	
+	public boolean execute();
 	
-	public void execute();
+	public int getColor();
 
 }

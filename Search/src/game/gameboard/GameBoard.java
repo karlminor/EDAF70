@@ -24,21 +24,10 @@ public class GameBoard {
 		this.gamePieces = gamePieces;
 	}
 	
-	public boolean add(int row, int col, int color) {
-		if(row > 8 || col > 8 || (color != GameBoard.BLACK && color != GameBoard.WHITE) || gamePieces[row][col] != GameBoard.EMPTY){
-			return false;
-		}
+	public void update(int row, int col, int color) {
 		gamePieces[row][col] = color;
-		return true;
 	}
 	
-	public boolean update(int row, int col, int color) {
-		if(row > 8 || col > 8 || (color != GameBoard.BLACK && color != GameBoard.WHITE)){
-			return false;
-		}
-		gamePieces[row][col] = color;
-		return true;
-	}
 	
 	public void print() {
 		printLetters();
@@ -87,20 +76,67 @@ public class GameBoard {
 	
 	public GameBoard actionResult(int action){
 		GameBoard gbCopy = new GameBoard(gamePieces);
-
+		
 		return gbCopy;
 	}
 	
-	public ArrayList<Integer> evaluate(){
+	public int count(int color) {
+		int count = 0;
+		for (int r=0; r < gamePieces.length; r++) {
+			for (int c=0; c < gamePieces[0].length; c++) {
+				if(gamePieces[r][c] == color) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+	public ArrayList<Integer> evaluate(int color){
 		ArrayList<Integer> possibleActions = new ArrayList<>();
 		for(int r = 0; r < 8; r++) {
 			for (int c = 0; c < 8; c++) {
-				// TODO 
-				if(true) {
-					possibleActions.add(r * 8 + c);
+				if(gamePieces[r][c] == EMPTY) {
+					if(evaluateHere(r, c, color)){
+						possibleActions.add(r*8+c);
+					}
 				}
 			}
 		}
 		return possibleActions;
+	}
+	
+	private boolean oppositeColor(int color1, int color2) {
+		return color1 != EMPTY && color1 != color2;
+	}
+	
+	private boolean evaluateHere(int row, int col, int color) {
+		
+		for(int r = 1; r >= -1; r--) {
+			for (int c = -1; c <= 1; c++) {
+				//System.out.println((col+1) + " " + (row+1) + " " + c + " " + r);
+				if(row+r < 8 && row+r >= 0 && col+c < 8 && col+c >= 0) {
+					if(oppositeColor(gamePieces[row+r][col+c], color)) {
+						//System.out.println((col+1) + " " + (row+1) + " " + c + " " + r + " " + gamePieces[row+r][col+c]);
+						if(evaluateDirection(row+r, col+c, r, c, color)) {
+							return true;
+						}
+					}
+				}	
+			}
+		}
+		return false;
+	}
+	
+	private boolean evaluateDirection(int row, int col, int rowDir, int colDir, int color) {
+		row += rowDir;
+		col += colDir;
+		if(row >= 8 || row < 0 || col >= 8 || col < 0) {
+			return false;
+		}
+		if(oppositeColor(gamePieces[row][col],color)){
+			return evaluateDirection(row, col, rowDir, colDir, color);
+		}
+		return gamePieces[row][col] == color;
 	}
 }
