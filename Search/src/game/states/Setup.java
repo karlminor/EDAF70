@@ -19,7 +19,7 @@ public class Setup{
 		do {
 			System.out.print("Please choose your color (white/black): \n");
 			//input = controller.handleInput();
-		}while(!input.equals("white") && !input.equals("black"));
+		}while(!input.toLowerCase().equals("white") && !input.toLowerCase().equals("black"));
 		if(input.equals("white")) {
 			gameBoard.playerColor = GameBoard.WHITE;
 			gameBoard.opponentColor = GameBoard.BLACK;

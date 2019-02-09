@@ -26,6 +26,26 @@ public class GameBoard {
 	
 	public void update(int row, int col, int color) {
 		gamePieces[row][col] = color;
+		for(int r = -1; r <= 1; r++) {
+			for (int c = -1; c <= 1; c++) {
+				update(row + r, col + c, r, c, color);
+			}
+		}
+	}
+	
+	private boolean update(int row, int col, int rowDir, int colDir, int color) {
+		if(row > 7 || row < 0 || col > 7 || col  < 0) {
+			return false;
+		}
+		if(oppositeColor(gamePieces[row][col ], color)){
+			if(update(row + rowDir, col + colDir, rowDir, colDir, color)) {
+				gamePieces[row][col] = color;
+				return true;
+			}else {
+				return false;
+			}
+		}
+		return gamePieces[row][col] == color;
 	}
 	
 	
@@ -111,7 +131,6 @@ public class GameBoard {
 	}
 	
 	private boolean evaluateHere(int row, int col, int color) {
-		
 		for(int r = 1; r >= -1; r--) {
 			for (int c = -1; c <= 1; c++) {
 				//System.out.println((col+1) + " " + (row+1) + " " + c + " " + r);

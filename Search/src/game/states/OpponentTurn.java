@@ -43,14 +43,13 @@ public class OpponentTurn implements State {
 	}
 	
 	private int getMove(ArrayList<Integer> possibleActions) {
-		int move = -1;
+		int move;
 		do {
 			System.out.print("Input your move (e.g. 'a1'): ");
 			move = Action.parseString(controller.handleInput());
 			if(move == -1) {
 				System.out.println("Invalid input");
-			}
-			if(!possibleActions.contains(move)) {
+			}else if(!possibleActions.contains(move)) {
 				System.out.println("Not a valid move");
 			}
 		} while(move == -1 || !possibleActions.contains(move));
