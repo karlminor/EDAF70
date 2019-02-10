@@ -1,27 +1,21 @@
 package game;
 
-import ai.AI;
 import controller.Controller;
-import game.gameboard.Action;
 import game.gameboard.GameBoard;
 import game.states.*;
 
 public class Game {
-	GameBoard gameBoard;
-	Controller controller;
-	AI ai;
-	State currentState;
-	State playerTurnState;
-	State oppTurnState;
-	Setup setupState;
-	boolean turnUnavailable;
+	private GameBoard gameBoard;
+	private Controller controller;
+	private State playerTurnState;
+	private State oppTurnState;
+	private Setup setupState;
+	private boolean turnUnavailable;
 	
 	public Game() {
 		this.controller = new Controller();
 		gameBoard = new GameBoard();
-		ai = new AI();
 		
-		currentState = new CurrentState();
 		setupState = new Setup(controller, gameBoard);
 
 	}
@@ -29,8 +23,8 @@ public class Game {
 	public void start() {
 		setupState.execute();
 		
-		playerTurnState = new PlayerTurn(controller, gameBoard, gameBoard.playerColor);
-		oppTurnState = new OpponentTurn(controller, gameBoard, gameBoard.opponentColor);
+		playerTurnState = new PlayerTurn(controller, this, gameBoard.playerColor);
+		oppTurnState = new OpponentTurn(controller, this, gameBoard.opponentColor);
 		State[] playStates = new State[2];
 		playStates[0] = playerTurnState;
 		playStates[1] = oppTurnState;
@@ -39,19 +33,11 @@ public class Game {
 			playStates[1] = playerTurnState;
 		}
 		int i = 0;
-		/*for (int gbc : gameBoard.evaluate(GameBoard.BLACK)) {
-			System.out.println(gbc);
-			System.out.println(Action.parseInt(gbc));
-			System.out.println(Action.parseString(Action.parseInt(gbc)));
-		}*/
 		CurrentState currentState = new CurrentState();
 		turnUnavailable = false;
 		while(true) {
-			System.out.println("ny turn");
-			System.out.println(i);
 			currentState.setState(playStates[i]);
 			if(currentState.execute()) {
-				System.out.println("player turn");
 				turnUnavailable = false;
 			} else if (turnUnavailable){
 				break;
@@ -60,6 +46,21 @@ public class Game {
 			}
 			i = 1-i;
 		}
+		if(gameBoard.count(gameBoard.playerColor) > gameBoard.count(gameBoard.opponentColor)) {
+			System.out.println("AI won!");
+		}
+		else {
+			System.out.println("AI lost!");
+		}
+	}
+	
+	public GameBoard currentGameBoard() {
+		return gameBoard.copy();
+	}
+	
+	public void action(int row, int col, int color) {
+		gameBoard.update(row, col, color);
+		gameBoard.print();
 	}
 	
 

@@ -2,13 +2,14 @@ package game.gameboard;
 
 import java.util.ArrayList;
 
-public class GameBoard {
+public class GameBoard implements Cloneable{
 	public final static int EMPTY = 0;
 	public final static int WHITE = 1;
 	public final static int BLACK = 2;
 	private int[][] gamePieces;
 	public int playerColor = BLACK;
 	public int opponentColor = WHITE;
+	public boolean playerTurn = true;
 	
 
 	public GameBoard() {
@@ -20,8 +21,32 @@ public class GameBoard {
 		}
 	}
 	
-	public GameBoard(int[][] gamePieces) {
-		this.gamePieces = gamePieces;
+	public GameBoard(GameBoard gameBoardToCopy) {
+		this.gamePieces = copyGamePieces(gameBoardToCopy.gamePieces);
+		this.playerColor = gameBoardToCopy.playerColor;
+		this.opponentColor = gameBoardToCopy.opponentColor;
+		this.playerTurn = gameBoardToCopy.playerTurn;
+	}
+	
+	private int[][] copyGamePieces(int[][] gamePiecesToCopy){
+		int[][] copy = new int[8][8];
+		for (int r=0; r < 8; r++) {
+			for (int c=0; c < 8; c++) {
+				copy[r][c] = gamePiecesToCopy[r][c];
+			}
+		}
+		return copy;
+	}
+	
+	public GameBoard copy() {
+		return new GameBoard(this);
+	}
+	
+	public int getCurrentColor() {
+		if(playerTurn) {
+			return playerColor;
+		}
+		return opponentColor;
 	}
 	
 	public void update(int row, int col, int color) {
@@ -31,8 +56,13 @@ public class GameBoard {
 				update(row + r, col + c, r, c, color);
 			}
 		}
+		if (color == playerColor) {
+			playerTurn = false;
+		} else {
+			playerTurn = true;
+		}
 	}
-	
+		
 	private boolean update(int row, int col, int rowDir, int colDir, int color) {
 		if(row > 7 || row < 0 || col > 7 || col  < 0) {
 			return false;
@@ -47,7 +77,6 @@ public class GameBoard {
 		}
 		return gamePieces[row][col] == color;
 	}
-	
 	
 	public void print() {
 		printLetters();
@@ -94,9 +123,12 @@ public class GameBoard {
 	}
 	
 	
-	public GameBoard actionResult(int action){
-		GameBoard gbCopy = new GameBoard(gamePieces);
-		
+	public GameBoard actionResult(int action, int color){
+		GameBoard gbCopy = new GameBoard(this);
+		int col = action%8;
+		int row = action/8;
+		gbCopy.update(row, col, color);
+		//gbCopy.print();
 		return gbCopy;
 	}
 	

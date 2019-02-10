@@ -16,7 +16,6 @@ public class CurrentState implements State {
 	}
 
 	public boolean execute() {
-		System.out.println("currentstate execute");
 		return currentState.execute();
 	}
 

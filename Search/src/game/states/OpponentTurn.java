@@ -2,23 +2,29 @@ package game.states;
 
 import java.util.ArrayList;
 
+import ai.AI;
 import controller.Controller;
+import game.Game;
 import game.gameboard.Action;
 import game.gameboard.GameBoard;
 
 public class OpponentTurn implements State {
 	private Controller controller;
-	private GameBoard gameBoard;
+	private Game game;
 	private int color;
+	private AI ai;
 	
-	public OpponentTurn(Controller controller, GameBoard gameBoard, int color) {
+	public OpponentTurn(Controller controller, Game game, int color) {
 		this.controller = controller;
-		this.gameBoard = gameBoard;
 		this.color = color;
+		ai = new AI(5);
+		this.game = game;
 	}
 
 	@Override
 	public boolean execute() {
+		System.out.println("Your turn");
+		GameBoard gameBoard = game.currentGameBoard();
 		ArrayList<Integer> possibleActions = gameBoard.evaluate(color);
 		if(possibleActions.isEmpty()) {
 			System.out.println("No possible actions");
@@ -32,8 +38,7 @@ public class OpponentTurn implements State {
 		int move = getMove(possibleActions);
 		int col = move%8;
 		int row = move/8;
-		gameBoard.update(row, col, color);
-		gameBoard.print();
+		game.action(row, col, color);
 		return true;
 	}
 	
