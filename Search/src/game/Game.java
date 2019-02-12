@@ -52,6 +52,7 @@ public class Game {
 		else {
 			System.out.println("AI lost!");
 		}
+		System.out.println("AI score: " + gameBoard.count(gameBoard.playerColor) + ". Opponent score: " + gameBoard.count(gameBoard.opponentColor));
 	}
 	
 	public GameBoard currentGameBoard() {

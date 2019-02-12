@@ -37,6 +37,9 @@ public class PlayerTurn implements State {
 		//System.out.println("Before ai: ");
 		//gameBoard.print();
 		int move = ai.miniMaxDecision(gameBoard, color);
+		if(move == -1) {
+			return false;
+		}
 		System.out.println("AI chose: " + Action.parseInt(move));
 		//System.out.println("After ai: ");
 		//gameBoard.print();
