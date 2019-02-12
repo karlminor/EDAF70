@@ -1,8 +1,6 @@
 package game.states;
 
 import java.util.ArrayList;
-
-import ai.AI;
 import controller.Controller;
 import game.Game;
 import game.gameboard.Action;
@@ -12,12 +10,10 @@ public class OpponentTurn implements State {
 	private Controller controller;
 	private Game game;
 	private int color;
-	private AI ai;
 	
 	public OpponentTurn(Controller controller, Game game, int color) {
 		this.controller = controller;
 		this.color = color;
-		ai = new AI(5);
 		this.game = game;
 	}
 

@@ -6,26 +6,26 @@ import java.util.Random;
 import game.gameboard.Action;
 import game.gameboard.GameBoard;
 
-public class AI {
-	private int depth;
-	private int counter;
+public class ABAI {
+	private long timeLimit;
 	private int checkColor;
-	private GameBoard gameBoard;
+	private long currentTime;
+	private long startTime;
 	
-	public AI(int depth) {
-		this.depth = depth;
+	public ABAI(long timeLimit) {
+		this.timeLimit = timeLimit;
 	}
 	
-	public int miniMaxDecision(GameBoard gameBoard, int checkColor) {
+	public int alphaBetaDecision(GameBoard gameBoard, int checkColor) {
+		startTime = System.currentTimeMillis();
 		this.checkColor = checkColor;
 		ArrayList<Integer> possibleActions = gameBoard.evaluate(checkColor);
 		int maxValue = 0;
 		int testValue;
 		ArrayList<Integer> equalValues = new ArrayList<>();
 		for (int action : possibleActions) {
-			counter = 0;
 			GameBoard gbCopy = gameBoard.actionResult(action, checkColor);
-			testValue = minValue(gbCopy);
+			testValue = maxValue(gbCopy, Integer.MIN_VALUE, Integer.MAX_VALUE);
 			if (testValue > maxValue) {
 				maxValue = testValue;
 				equalValues.clear();
@@ -41,38 +41,39 @@ public class AI {
 		return equalValues.get(rand.nextInt(equalValues.size()));
 	}
 	
-	private int maxValue(GameBoard gameBoard) {
+	private int maxValue(GameBoard gameBoard, int a, int b) {
+		currentTime = System.currentTimeMillis();
 		int color = gameBoard.getCurrentColor();
 		ArrayList<Integer> possibleActions = gameBoard.evaluate(color);
-		if(possibleActions.isEmpty()) {
+		if(possibleActions.isEmpty() || (currentTime - startTime) > timeLimit) {
 			return gameBoard.count(checkColor);
 		}
-		int maxValue = Integer.MIN_VALUE;
-		int testValue;
+		int v = Integer.MIN_VALUE;
 		for (int action : possibleActions){
-			testValue = minValue(gameBoard.actionResult(action, color));
-			if (testValue > maxValue) {
-				maxValue = testValue;
+			v = Integer.max(v, minValue(gameBoard.actionResult(action, color), a, b));
+			if(v >= b) {
+				return v;
 			}
+			a = Integer.max(a, v);
 		}
-		return maxValue;
+		return v;
 	}
 	
-	private int minValue(GameBoard gameBoard) {
-		counter++;
+	private int minValue(GameBoard gameBoard, int a, int b) {
+		currentTime = System.currentTimeMillis();
 		int color = gameBoard.getCurrentColor();
 		ArrayList<Integer> possibleActions = gameBoard.evaluate(color);
-		if(possibleActions.isEmpty() || counter >= depth) {
+		if(possibleActions.isEmpty() || (currentTime - startTime) > timeLimit) {
 			return gameBoard.count(checkColor);
 		}
-		int minValue = Integer.MAX_VALUE;
-		int testValue;
+		int v = Integer.MAX_VALUE;
 		for (int action : possibleActions){
-			testValue = maxValue(gameBoard.actionResult(action,color));
-			if (testValue < minValue) {
-				minValue = testValue;
+			v = Integer.min(v, maxValue(gameBoard.actionResult(action,color), a, b));
+			if (v <= a) {
+				return v;
 			}
+			b = Integer.min(b, v);
 		}
-		return minValue;
+		return v;
 	}
 }

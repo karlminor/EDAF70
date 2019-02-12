@@ -7,8 +7,8 @@ public class GameBoard implements Cloneable{
 	public final static int WHITE = 1;
 	public final static int BLACK = 2;
 	private int[][] gamePieces;
-	public int playerColor = BLACK;
-	public int opponentColor = WHITE;
+	public int playerColor = WHITE;
+	public int opponentColor = BLACK;
 	public boolean playerTurn = true;
 	
 
@@ -128,7 +128,6 @@ public class GameBoard implements Cloneable{
 		int col = action%8;
 		int row = action/8;
 		gbCopy.update(row, col, color);
-		//gbCopy.print();
 		return gbCopy;
 	}
 	

@@ -23,7 +23,7 @@ public class Game {
 	public void start() {
 		setupState.execute();
 		
-		playerTurnState = new PlayerTurn(controller, this, gameBoard.playerColor);
+		playerTurnState = new PlayerTurn(this, gameBoard.playerColor, setupState.timeLimit);
 		oppTurnState = new OpponentTurn(controller, this, gameBoard.opponentColor);
 		State[] playStates = new State[2];
 		playStates[0] = playerTurnState;
