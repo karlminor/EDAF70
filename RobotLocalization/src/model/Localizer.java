@@ -1,15 +1,20 @@
 package model;
 
 import control.EstimatorInterface;
+import model.reason.TransitionMatrix;
 
 public class Localizer implements EstimatorInterface {
 	
 	private int rows, cols, head;
+	private TransitionMatrix transMatrix;
+	private Robot mrRoboto;
 	
 	public Localizer(int rows, int cols, int head) {
 		this.rows = rows;
 		this.cols = cols;
 		this.head = head;	
+		transMatrix = new TransitionMatrix(rows,cols,head);
+		mrRoboto = new Robot(0,0,1, cols, rows, head);
 	}
 
 	public int getNumRows() {
@@ -32,12 +37,12 @@ public class Localizer implements EstimatorInterface {
 		return 0.1;
 	}
 
+	/*
+	 * returns the currently known true position i.e., after one simulation step
+	 * of the robot as (x,y)-pair.
+	 */
 	public int[] getCurrentTrueState() {
-		
-		int[] ret = new int[3];
-		ret[0] = rows/2;
-		ret[1] = cols/2;
-		ret[2] = head;
+		int[] ret = {mrRoboto.y, mrRoboto.x, mrRoboto.h};
 		return ret;
 	}
 
@@ -53,7 +58,7 @@ public class Localizer implements EstimatorInterface {
 	}
 	
 	public void update() {
-		System.out.println("Nothing is happening, no model to go for...");
+		mrRoboto.move();
 	}
 
 }
