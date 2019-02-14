@@ -2,17 +2,16 @@ package model;
 
 import control.EstimatorInterface;
 
-public class DummyLocalizer implements EstimatorInterface {
-		
+public class Localizer implements EstimatorInterface {
+	
 	private int rows, cols, head;
-
-	public DummyLocalizer(int rows, int cols, int head) {
+	
+	public Localizer(int rows, int cols, int head) {
 		this.rows = rows;
 		this.cols = cols;
-		this.head = head;
-		
-	}	
-	
+		this.head = head;	
+	}
+
 	public int getNumRows() {
 		return rows;
 	}
@@ -24,7 +23,7 @@ public class DummyLocalizer implements EstimatorInterface {
 	public int getNumHead() {
 		return head;
 	}
-	
+
 	public double getTProb(int x, int y, int h, int nX, int nY, int nH) {
 		return 0.0;
 	}
@@ -33,7 +32,6 @@ public class DummyLocalizer implements EstimatorInterface {
 		return 0.1;
 	}
 
-
 	public int[] getCurrentTrueState() {
 		
 		int[] ret = new int[3];
@@ -41,7 +39,6 @@ public class DummyLocalizer implements EstimatorInterface {
 		ret[1] = cols/2;
 		ret[2] = head;
 		return ret;
-
 	}
 
 	public int[] getCurrentReading() {
@@ -58,6 +55,5 @@ public class DummyLocalizer implements EstimatorInterface {
 	public void update() {
 		System.out.println("Nothing is happening, no model to go for...");
 	}
-	
-	
+
 }
