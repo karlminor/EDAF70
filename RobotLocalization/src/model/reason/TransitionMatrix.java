@@ -25,6 +25,17 @@ public class TransitionMatrix {
 		//System.out.println(matrixRow + " " + matrixCol);
 		return matrix[matrixRow][matrixCol].p;
 	}
+	
+	public double[][] getTranspose(){
+		double[][] product = new double[row*col*head][row*col*head];
+		for (int i = 0; i < row*col*head; i++) {
+			for (int n = 0; n < row*col*head; n++) {
+				product[n][i] = matrix[i][n].p;
+			}
+		}
+		
+		return product;
+	}
 
 	private void setupMatrix() {
 		int matrixRow = 0;

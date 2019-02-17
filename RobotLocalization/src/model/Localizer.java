@@ -1,19 +1,25 @@
 package model;
 
 import control.EstimatorInterface;
+import model.reason.HMM;
+import model.reason.ObservationMatrix;
 import model.reason.TransitionMatrix;
 
 public class Localizer implements EstimatorInterface {
 	
 	private int rows, cols, head;
 	private TransitionMatrix transMatrix;
+	private ObservationMatrix obsMatrix;
 	private Robot mrRoboto;
+	private HMM hmm;
 	
 	public Localizer(int rows, int cols, int head) {
 		this.rows = rows;
 		this.cols = cols;
 		this.head = head;	
 		transMatrix = new TransitionMatrix(rows,cols,head);
+		obsMatrix = new ObservationMatrix(rows,cols,head);
+		hmm = new HMM(transMatrix, obsMatrix, rows, cols, head);
 		mrRoboto = new Robot(0,0,1, cols, rows, head);
 	}
 
@@ -45,7 +51,7 @@ public class Localizer implements EstimatorInterface {
 	 * positions (x, y)).
 	 */
 	public double getOrXY(int rX, int rY, int x, int y, int h) {
-		return 0.1;
+		return obsMatrix.getP(rX, rY, x, y);
 	}
 
 	/*
@@ -63,8 +69,9 @@ public class Localizer implements EstimatorInterface {
 	 * returns null if the reading was "nothing" (whatever that stands for in your model)
 	 */
 	public int[] getCurrentReading() {
-		int[] ret = null;
-		return ret;
+		int[] ret = obsMatrix.getSensorReading();
+		int[] reading = {ret[1],ret[0]}; 
+		return reading;
 	}
 
 
@@ -74,8 +81,7 @@ public class Localizer implements EstimatorInterface {
 	 * view somewhat unclear.
 	 */
 	public double getCurrentProb(int x, int y) {
-		double ret = 0.0;
-		return ret;
+		return hmm.getProb(x,y);
 	}
 	
 	/*
@@ -85,6 +91,8 @@ public class Localizer implements EstimatorInterface {
 	 */
 	public void update() {
 		mrRoboto.move();
+		obsMatrix.updateSensor(getCurrentTrueState()[1], getCurrentTrueState()[0]);
+		hmm.updateProb(obsMatrix.getSensorReading());
 	}
 
 }
