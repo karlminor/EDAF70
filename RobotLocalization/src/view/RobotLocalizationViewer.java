@@ -22,6 +22,8 @@ public class RobotLocalizationViewer {
 	private EstimatorInterface loc;
 	private int sXCount, sYCount, tXCount, tYCount, tHCount;
 	private boolean runFlag, initFlag;
+	int counter = 0;
+	int correctCounter = 0;
 	
 	public RobotLocalizationViewer( EstimatorInterface l) {
 		loc = l;
@@ -216,7 +218,10 @@ public class RobotLocalizationViewer {
 			for( x=0; x<rows; x++) {
 				for( y=0; y<cols; y++) {
 					if( posProb[x][y] == posProbMax){
-				
+						if(x == tX && y == tY) {
+							correctCounter++;
+
+						}
 						states[x][y][0].setBackground(Color.lightGray);
 						states[x][y][1].setBackground(Color.lightGray);
 						states[x][y][2].setBackground(Color.lightGray);
@@ -225,6 +230,9 @@ public class RobotLocalizationViewer {
 				}
 			}
 		}
+		counter++;
+		
+		System.out.println("Correct : " + (double)correctCounter/counter);
 			
 		states[tX][tY][tH].setBackground(Color.black);
 		if( sX != -1)

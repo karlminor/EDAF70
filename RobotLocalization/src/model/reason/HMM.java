@@ -25,18 +25,44 @@ public class HMM {
 		if(x == -1 && y == -1) {
 			row = rows*cols;
 		}
-		f = matrixMultiply(matrixMultiply(transMatrix.getTranspose(),obsMatrix.getDiagonal(row)),f);
+		f = matrixMultiply(matrixMultiply(obsMatrix.getDiagonal(row),transMatrix.getTranspose()),f);
+		
 		normalize();
 	}
 	
 	public void normalize() {
+		double sumProb = 0;
+		for(double d : f) {
+			sumProb += d;
+		}
+		if(sumProb != 0) {
+			for(int i = 0; i < f.length; i++) {
+				f[i] /= sumProb;
+			}
+		}
+		
+//		for(double d : f) {
+//			System.out.print(d + " ");
+//		}
+//		System.out.println();
+//		System.out.println();
+		
 		for (int x = 0; x < cols; x++) {
 			for (int y = 0; y < rows; y++) {
+				probabilities[x][y] = 0;
 				for (int h = 0; h < head; h++) {
 					probabilities[x][y] += f[x*cols*head+y*head+h];
 				}
 			}
 		}
+		
+//		for(double[] d : probabilities) {
+//			for(double dd : d) {
+//				System.out.print(dd + " ");
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
 	}
 	
 	public double getProb(int x, int y) {
