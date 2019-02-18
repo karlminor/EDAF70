@@ -70,6 +70,11 @@ public class Localizer implements EstimatorInterface {
 	 */
 	public int[] getCurrentReading() {
 		int[] ret = obsMatrix.getSensorReading();
+		if(ret[0] == -1 || ret[1] == -1){
+			return null;
+		} 
+
+	
 		int[] reading = {ret[1],ret[0]}; 
 		return reading;
 	}
