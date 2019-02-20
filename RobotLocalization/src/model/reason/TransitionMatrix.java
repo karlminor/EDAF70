@@ -17,16 +17,15 @@ public class TransitionMatrix {
 
 	/*
 	 * returns the probability entry (Tij) of the transition matrix T to go from
-	 * pose i = (x, y, h) to pose j = (nX, nY, nH)
+	 * pos i = (x, y, h) to pose j = (nX, nY, nH)
 	 */
 	public double getP(int x, int y, int h, int nX, int nY, int nH) {
-		// Changed matrixRow from (y * col * head + x * head + h)
-		// to (x * col * head + y * head + h)
 		int matrixRow = x * col * head + y * head + h;
 		int matrixCol = nX * col * head + nY * head + nH;
 		return matrix[matrixRow][matrixCol].p;
 	}
 
+	//Returns a transpose of the Transition Matrix
 	public double[][] getTranspose() {
 		double[][] product = new double[row * col * head][row * col * head];
 		for (int i = 0; i < row * col * head; i++) {
@@ -37,6 +36,7 @@ public class TransitionMatrix {
 		return product;
 	}
 
+	//Creates a matrix with all possible positions and headings and assigns them their probabilities
 	private void setupMatrix() {
 		int matrixRow = 0;
 		for (int x = 0; x < col; x++) {
@@ -55,6 +55,7 @@ public class TransitionMatrix {
 			}
 		}
 
+		//Calculate all probabilites
 		for (int rr = 0; rr < row; rr++) {
 			for (int cc = 0; cc < col; cc++) {
 				for (int hh = 0; hh < head; hh++) {
@@ -65,6 +66,7 @@ public class TransitionMatrix {
 		}
 	}
 
+	//Calculates the probabilites to go to neighboring states given a current state
 	private void calcP(State s) {
 		ArrayList<State> possibleStates = possibleNextStates(s.trueX, s.trueY, s.trueH);
 		for (State st : possibleStates) {
@@ -72,9 +74,8 @@ public class TransitionMatrix {
 		}
 	}
 
+	//Sets the probability to go to State s given the original heading
 	private void updateP(State s, int originalH, int nbrOfPossibleStates) {
-		// Changed matrixRow from (s.trueX * col * head + s.trueY * head + s.trueH)
-		// to (s.trueY * col * head + s.trueX * head + s.trueH)
 		int matrixRow = s.trueY * col * head + s.trueX * head + s.trueH;
 		int matrixCol = s.y * col * head + s.x * head + s.h;
 
@@ -90,6 +91,7 @@ public class TransitionMatrix {
 		}
 	}
 
+	//Return a list of the possible positions Mr Roboto can go to given a position x,y,h
 	private ArrayList<State> possibleNextStates(int x, int y, int h) {
 		ArrayList<State> nextStates = new ArrayList<>();
 		for (int i = 0; i < head; i++) {
@@ -119,6 +121,7 @@ public class TransitionMatrix {
 		return nextStates;
 	}
 
+	//Check if heading this direction is within bounds
 	private boolean check(int x, int y, int h) {
 		int dx = 0;
 		int dy = 0;

@@ -15,6 +15,7 @@ public class Robot {
 		this.maxH = maxH;
 	}
 
+	//Moves Mr Roboto in the current heading
 	public void move() {
 		setHeading();
 		switch (h) {
@@ -33,6 +34,7 @@ public class Robot {
 		}
 	}
 
+	//Sets Mr Roboto's heading given the probabilities
 	private void setHeading() {
 		Random rand = new Random();
 		if ((rand.nextInt(100) + 1) <= 70 && check(h)) {
@@ -47,6 +49,7 @@ public class Robot {
 		h = possibleHeadings.get(rand.nextInt(possibleHeadings.size()));
 	}
 
+	//Checks if Mr Roboto can move in the given heading
 	private boolean check(int h) {
 		int dx = 0;
 		int dy = 0;

@@ -15,16 +15,15 @@ public class HMM {
 		this.head = head;
 		probabilities = new double[rows][cols];
 		f = new double[rows * cols * head];
-		// f[1] = 1;
 		for (int i = 0; i < f.length; i++) {
 			f[i] = 1.0 / f.length;
 		}
 	}
 
+	//Updates the probabilities for Mr Roboto's location given a sensor reading
 	public void updateProb(int[] xy) {
 		int x = xy[0];
 		int y = xy[1];
-		// Changed x*cols+y to y*cols+x.
 		int row = y * cols + x;
 		if (x == -1 && y == -1) {
 			row = rows * cols;
@@ -33,7 +32,8 @@ public class HMM {
 		f = matrixMultiply(matrixMultiply(obsMatrix.getDiagonal(row), transMatrix.getTranspose()), f);
 		normalize();
 	}
-
+	
+	//Normalizes probabilities to ensure they add up to 1
 	public void normalize() {
 		double sumProb = 0;
 		for (double d : f) {
@@ -54,11 +54,13 @@ public class HMM {
 			}
 		}
 	}
-
+	
+	//Returns the probability that Mr Roboto is in position x,y
 	public double getProb(int x, int y) {
 		return probabilities[x][y];
 	}
 
+	//Matrix multiplication
 	private double[][] matrixMultiply(double[][] matrix1, double[][] matrix2) {
 		int rows = matrix1.length;
 		int cols = matrix1[0].length;
@@ -72,7 +74,8 @@ public class HMM {
 		}
 		return product;
 	}
-
+	
+	//Multiplies a matrix with a vector
 	private double[] matrixMultiply(double[][] matrix, double[] vector) {
 		int rows = matrix.length;
 		int cols = matrix[0].length;

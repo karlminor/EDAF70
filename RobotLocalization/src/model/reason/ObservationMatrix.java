@@ -33,6 +33,7 @@ public class ObservationMatrix {
 		return matrix[matrixRow][matrixCol].p;
 	}
 
+	//Returns a diagonal matrix of a specified row of the Observation Matrix
 	public double[][] getDiagonal(int row) {
 		State[] rowVector = matrix[row];
 		double[][] diagonalMatrix = new double[rows * cols * heads][rows * cols * heads];
@@ -44,6 +45,7 @@ public class ObservationMatrix {
 		return diagonalMatrix;
 	}
 
+	//Performs a new sensor reading given Mr Roboto's current true position
 	public void updateSensor(int x, int y) {
 		int[] reading = { -1, -1 };
 
@@ -68,10 +70,12 @@ public class ObservationMatrix {
 		currentSensorReading = reading;
 	}
 
+	//Returns the current sensor reading
 	public int[] getSensorReading() {
 		return currentSensorReading;
 	}
 
+	//Adds values to the Observation Matrix
 	private void setupMatrix() {
 		for (int x = 0; x < cols; x++) {
 			for (int y = 0; y < rows; y++) {
@@ -95,6 +99,7 @@ public class ObservationMatrix {
 		}
 	}
 
+	//Calculates probabilities for the sensor to return nothing given a state and adds it to corresponding state
 	private void calculateP(State s) {
 		if (s.trueX != -1) {
 			matrix[s.trueX * cols + s.trueY][s.x * cols + s.y].p = findP(s.trueX, s.trueY, s.x, s.y);
@@ -104,6 +109,7 @@ public class ObservationMatrix {
 
 	}
 
+	//Help function to find probabilities
 	private double findP(int trueX, int trueY, int x, int y) {
 		int distance = Math.max(Math.abs(trueX - x), Math.abs(trueY - y));
 		switch (distance) {
@@ -118,6 +124,7 @@ public class ObservationMatrix {
 		}
 	}
 
+	//Help function to sum probabilities
 	private double sumP(int trueX, int trueY) {
 		double sum = 0;
 		for (State s : matrix[trueX * cols + trueY]) {
@@ -126,6 +133,7 @@ public class ObservationMatrix {
 		return 1 - sum;
 	}
 
+	//Returns a list of the neighbors to a given position and a given distance
 	private ArrayList<int[]> getNeighbors(int x, int y, int distance) {
 		ArrayList<int[]> neighbors = new ArrayList<int[]>();
 		for (int i = x - distance; i <= x + distance; i++) {
