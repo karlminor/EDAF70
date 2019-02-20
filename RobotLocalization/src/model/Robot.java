@@ -6,13 +6,14 @@ import java.util.Random;
 public class Robot {
 	int x, y, h, maxX, maxY, maxH;
 
-	public Robot(int x, int y, int h, int maxX, int maxY, int maxH) {
+	public Robot(int x, int y, int maxX, int maxY, int maxH) {
 		this.x = x;
 		this.y = y;
-		this.h = h;
 		this.maxX = maxX;
 		this.maxY = maxY;
 		this.maxH = maxH;
+		Random rand = new Random();
+		h = rand.nextInt(maxH);
 	}
 
 	//Moves Mr Roboto in the current heading

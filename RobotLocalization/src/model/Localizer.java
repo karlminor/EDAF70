@@ -1,5 +1,6 @@
 package model;
 
+
 import control.EstimatorInterface;
 import model.reason.HMM;
 import model.reason.ObservationMatrix;
@@ -20,7 +21,7 @@ public class Localizer implements EstimatorInterface {
 		transMatrix = new TransitionMatrix(rows, cols, head);
 		obsMatrix = new ObservationMatrix(rows, cols, head);
 		hmm = new HMM(transMatrix, obsMatrix, rows, cols, head);
-		mrRoboto = new Robot(0, 0, 1, cols, rows, head);
+		mrRoboto = new Robot(0, 0, cols, rows, head);
 	}
 
 	public int getNumRows() {
