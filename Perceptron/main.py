@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import random
+import math
+from math import exp
 
 french_letter_count = [36961, 43621, 15964, 36231, 29945, 40588, 75255, 37709, 30899, 25486, 37497, 40398, 74105, 76725, 18317]
 french_A_count = [2503, 2992, 1042, 2487, 2014, 2805, 5062, 2643, 2126, 1784, 2641, 2766, 5047, 5312, 1215]
@@ -35,6 +37,7 @@ def linear_regression_batch():
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
+    plt.show()
     
 def linear_regression_stochastic():
     max_value = max(french_letter_count + english_letter_count)
@@ -57,7 +60,7 @@ def linear_regression_stochastic():
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
-    
+    plt.show()
     
 
 def normalize(list, max_value):
@@ -150,6 +153,7 @@ def perceptron():
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
+    plt.show()
     
     
 def leave_one_out_validation():
@@ -263,4 +267,141 @@ def calc_y(classifier,size):
     for i in range(size):
         list.append(classifier)
     return list
+
+def h_logistic(w,x):
+    product = 0
+    for i in range(len(w)):
+        product += w[i]*x[i]
+        
+    return 1 / (1 + exp(-product))
+        
     
+
+
+def logistic_regression():
+    match_rate = 0.99
+    max_iterations = 10000
+    
+    en_nodes = libsvm_reader("data/salammbo_en.txt")
+    en_y = calc_y(0, len(en_nodes))  
+    fr_nodes = libsvm_reader("data/salammbo_fr.txt")     
+    fr_y = calc_y(1, len(fr_nodes))
+    scale(en_nodes, fr_nodes)
+    y_list = en_y + fr_y
+    nodes = en_nodes + fr_nodes
+    
+    w = [0,0,0]
+    matches = 0
+    counter = 0
+    alpha = 1
+    size = len(nodes)
+    order = [i for i in range(size)]
+    
+    while True:
+        if matches > match_rate*size or counter > max_iterations:
+            break
+        
+        matches = 0
+        random_order = order.copy()
+        random.shuffle(random_order)
+        
+        for i in range(size):
+            index = random_order[i]
+            x = [1, nodes[index][0].v, nodes[index][1].v]
+            y = y_list[index]
+            
+            h_reg = h_logistic(w,x)
+            res = y - round(h_reg)
+            
+            if res == 0:
+                matches += 1
+            
+            for n in range(len(w)):
+                w[n] = w[n] + alpha * res * h_reg * (1 - h_reg) * x[n]
+        counter += 1 
+    letter_cnt = []
+    a_cnt = []
+    for i in range(size):
+        letter_cnt.append(nodes[i][0].v)
+        a_cnt.append(nodes[i][1].v)
+    w_line = []
+    x_hlp = [i * 1/size for i in range(0,size+1)]
+    for i in range(len(x_hlp)):
+        w_line.append(-((w[0]/w[2]) * x_hlp[i] + (w[1]/w[2]) * x_hlp[i]))
+    print(w)
+    plt.plot(x_hlp, w_line, label='Classification line')
+        
+    plt.plot(letter_cnt[:14], a_cnt[:14], 'bo', label='English')
+    plt.plot(letter_cnt[15:], a_cnt[15:], 'ro', label='French')
+    plt.suptitle("Logistic regression")
+    plt.xlabel('Normalized letter count per chapter')
+    plt.ylabel('Normalized count of letter a per chapter')
+    plt.legend()
+    plt.show()
+    
+    
+    
+def leave_one_out_validation_logistic():
+    en_nodes = libsvm_reader("data/salammbo_en.txt")
+    en_y = calc_y(0, len(en_nodes))  
+    fr_nodes = libsvm_reader("data/salammbo_fr.txt")     
+    fr_y = calc_y(1, len(fr_nodes))
+    scale(en_nodes, fr_nodes)
+    y_list = en_y + fr_y
+    nodes = en_nodes + fr_nodes
+    
+    matches = 0
+    
+    leave_one_out_nodes = []
+    leave_one_out_y = []
+    for n in range(len(nodes)):
+        for i in range(len(nodes)):
+            if(n != i):
+                leave_one_out_nodes.append(nodes[i])
+                leave_one_out_y.append(y_list[i])   
+        w = leave_one_out_validation_helper_logistic(leave_one_out_nodes, leave_one_out_y)
+        y = y_list[n]
+        x = [1, nodes[n][0].v,  nodes[n][1].v]
+        res = y - h(w,x)
+        if(res == 0):
+            matches += 1
+    print(matches)
+    
+def leave_one_out_validation_helper_logistic(x_nodes, y_list):
+    match_rate = 0.99
+    max_iterations = 10000
+    
+    w = [0,0,0]
+    matches = 0
+    counter = 0
+    alpha = 1
+    size = len(x_nodes)
+    order = [i for i in range(size)]
+    
+    while True:
+        if matches > match_rate*size or counter > max_iterations:
+            break
+        
+        matches = 0
+        random_order = order.copy()
+        random.shuffle(random_order)
+        
+        for i in range(size):
+            index = random_order[i]
+            x = [1, x_nodes[index][0].v, x_nodes[index][1].v]
+            y = y_list[index]
+            
+            h_reg = h_logistic(w,x)
+            res = y - round(h_reg)
+            
+            if res == 0:
+                matches += 1
+            
+            for n in range(len(w)):
+                w[n] = w[n] + alpha * res * h_reg * (1 - h_reg) * x[n]
+        counter += 1 
+    return w
+    
+if __name__ == '__main__':
+    logistic_regression()
+    leave_one_out_validation_logistic()
