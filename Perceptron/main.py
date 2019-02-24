@@ -150,6 +150,68 @@ def perceptron():
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
+    
+    
+def leave_one_out_validation():
+    en_nodes = libsvm_reader("data/salammbo_en.txt")
+    en_y = calc_y(0, len(en_nodes))  
+    fr_nodes = libsvm_reader("data/salammbo_fr.txt")     
+    fr_y = calc_y(1, len(fr_nodes))
+    scale(en_nodes, fr_nodes)
+    y_list = en_y + fr_y
+    nodes = en_nodes + fr_nodes
+    
+    matches = 0
+    
+    leave_one_out_nodes = []
+    leave_one_out_y = []
+    for n in range(len(nodes)):
+        for i in range(len(nodes)):
+            if(n != i):
+                leave_one_out_nodes.append(nodes[i])
+                leave_one_out_y.append(y_list[i])   
+        w = leave_one_out_validation_helper(leave_one_out_nodes, leave_one_out_y)
+        y = y_list[n]
+        x = [1, nodes[n][0].v,  nodes[n][1].v]
+        res = y - h(w,x)
+        if(res == 0):
+            matches += 1
+    print(matches)
+    
+def leave_one_out_validation_helper(x_nodes, y_list):
+    match_rate = 0.99
+    max_iterations = 10000
+    
+    w = [0,0,0]
+    matches = 0
+    counter = 0
+    alpha = 1
+    size = len(x_nodes)
+    order = [i for i in range(size)]
+    
+    while True:
+        if matches > match_rate*size or counter > max_iterations:
+            break
+        
+        matches = 0
+        random_order = order.copy()
+        random.shuffle(random_order)
+        
+        for i in range(size):
+            index = random_order[i]
+            x = [1, x_nodes[index][0].v, x_nodes[index][1].v]
+            y = y_list[index]
+            
+            res = y - h(w,x)
+            
+            if res == 0:
+                matches += 1
+            
+            for n in range(len(w)):
+                w[n] = w[n] + alpha*res*x[n]
+        counter += 1 
+    return w
+    
 
             
 
