@@ -25,6 +25,7 @@ def linear_regression_batch():
     fr_A_cnt_norm = normalize(french_A_count, max_value)
     eng_A_cnt_norm = normalize(english_A_count, max_value)
 
+    plt.figure(0)
     plt.plot(fr_ltr_cnt_norm, fr_A_cnt_norm, 'ro', label='French')
     plt.plot(eng_ltr_cnt_norm, eng_A_cnt_norm, 'bo', label='English')
     w = linear_regression_batch_help(fr_ltr_cnt_norm, fr_A_cnt_norm)
@@ -37,7 +38,7 @@ def linear_regression_batch():
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
-    plt.show()
+    plt.show(block = False)
     
 def linear_regression_stochastic():
     max_value = max(french_letter_count + english_letter_count)
@@ -48,6 +49,7 @@ def linear_regression_stochastic():
     fr_A_cnt_norm = normalize(french_A_count, max_value)
     eng_A_cnt_norm = normalize(english_A_count, max_value)
 
+    plt.figure(1)
     plt.plot(fr_ltr_cnt_norm, fr_A_cnt_norm, 'ro', label='French')
     plt.plot(eng_ltr_cnt_norm, eng_A_cnt_norm, 'bo', label='English')
     w = linear_regression_stoch_help(fr_ltr_cnt_norm, fr_A_cnt_norm)
@@ -60,7 +62,7 @@ def linear_regression_stochastic():
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
-    plt.show()
+    plt.show(block = False)
     
 
 def normalize(list, max_value):
@@ -145,15 +147,16 @@ def perceptron():
     for i in range(len(x_hlp)):
         w_line.append(-((w[0]/w[2]) * x_hlp[i] + (w[1]/w[2]) * x_hlp[i]))
     print(w)
+    
+    plt.figure(2)
     plt.plot(x_hlp, w_line, label='Classification line')
-        
     plt.plot(letter_cnt[:14], a_cnt[:14], 'bo', label='English')
     plt.plot(letter_cnt[15:], a_cnt[15:], 'ro', label='French')
     plt.suptitle("Perceptron results")
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
     plt.legend()
-    plt.show()
+    plt.show(block = False)
     
     
 def leave_one_out_validation():
@@ -293,7 +296,7 @@ def logistic_regression():
     w = [0,0,0]
     matches = 0
     counter = 0
-    alpha = 1
+    alpha = 0.5
     size = len(nodes)
     order = [i for i in range(size)]
     
@@ -311,13 +314,13 @@ def logistic_regression():
             y = y_list[index]
             
             h_reg = h_logistic(w,x)
-            res = y - round(h_reg)
+            res = y - h_reg
             
-            if res == 0:
+            if y - round(h_reg) == 0:
                 matches += 1
-            
-            for n in range(len(w)):
-                w[n] = w[n] + alpha * res * h_reg * (1 - h_reg) * x[n]
+            else:
+                for n in range(len(w)):
+                    w[n] = w[n] + alpha * res * x[n]
         counter += 1 
     letter_cnt = []
     a_cnt = []
@@ -329,8 +332,9 @@ def logistic_regression():
     for i in range(len(x_hlp)):
         w_line.append(-((w[0]/w[2]) * x_hlp[i] + (w[1]/w[2]) * x_hlp[i]))
     print(w)
-    plt.plot(x_hlp, w_line, label='Classification line')
-        
+    
+    plt.figure(3)
+    plt.plot(x_hlp, w_line, label='Classification line')   
     plt.plot(letter_cnt[:14], a_cnt[:14], 'bo', label='English')
     plt.plot(letter_cnt[15:], a_cnt[15:], 'ro', label='French')
     plt.suptitle("Logistic regression")
@@ -365,6 +369,7 @@ def leave_one_out_validation_logistic():
         res = y - h(w,x)
         if(res == 0):
             matches += 1
+
     print(matches)
     
 def leave_one_out_validation_helper_logistic(x_nodes, y_list):
@@ -374,7 +379,7 @@ def leave_one_out_validation_helper_logistic(x_nodes, y_list):
     w = [0,0,0]
     matches = 0
     counter = 0
-    alpha = 1
+    alpha = 0.5
     size = len(x_nodes)
     order = [i for i in range(size)]
     
@@ -392,16 +397,20 @@ def leave_one_out_validation_helper_logistic(x_nodes, y_list):
             y = y_list[index]
             
             h_reg = h_logistic(w,x)
-            res = y - round(h_reg)
+            res = y - h_reg
             
-            if res == 0:
+            if y - round(h_reg) == 0:
                 matches += 1
-            
-            for n in range(len(w)):
-                w[n] = w[n] + alpha * res * h_reg * (1 - h_reg) * x[n]
+            else:
+                for n in range(len(w)):
+                    w[n] = w[n] + alpha * res * x[n]
         counter += 1 
     return w
     
 if __name__ == '__main__':
-    logistic_regression()
+    linear_regression_batch()
+    linear_regression_stochastic()
+    leave_one_out_validation()
+    perceptron()
     leave_one_out_validation_logistic()
+    logistic_regression()
