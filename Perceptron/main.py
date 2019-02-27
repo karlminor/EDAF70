@@ -31,9 +31,16 @@ def linear_regression_batch():
     w = linear_regression_batch_help(fr_ltr_cnt_norm, fr_A_cnt_norm)
     x = np.array(fr_ltr_cnt_norm)
     plt.plot(x,w[1]*x+w[0], 'r', label='French regression line')
+    print("Batch linear regression, french:")
+    print(w)
+    
     w = linear_regression_batch_help(eng_ltr_cnt_norm, eng_A_cnt_norm)
     x = np.array(eng_ltr_cnt_norm)
     plt.plot(x,w[1]*x+w[0], 'b', label='English regression line')
+    print("Batch linear regression, english:")
+    print(w)
+    print()
+    
     plt.suptitle("Batch linear regression")
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
@@ -55,9 +62,16 @@ def linear_regression_stochastic():
     w = linear_regression_stoch_help(fr_ltr_cnt_norm, fr_A_cnt_norm)
     x = np.array(fr_ltr_cnt_norm)
     plt.plot(x,w[1]*x+w[0], 'r', label='French regression line')
+    print("Stochastic linear regression, french:")
+    print(w)
+    
     w = linear_regression_stoch_help(eng_ltr_cnt_norm, eng_A_cnt_norm)
     x = np.array(eng_ltr_cnt_norm)
     plt.plot(x,w[1]*x+w[0], 'b', label='English regression line')
+    print("Stochastic linear regression, english:")
+    print(w)
+    print()
+    
     plt.suptitle("Stochastic linear regression")
     plt.xlabel('Normalized letter count per chapter')
     plt.ylabel('Normalized count of letter a per chapter')
@@ -146,7 +160,9 @@ def perceptron():
     x_hlp = [i * 1/size for i in range(0,size+1)]
     for i in range(len(x_hlp)):
         w_line.append(-((w[0]/w[2]) * x_hlp[i] + (w[1]/w[2]) * x_hlp[i]))
+    print("Weight vector perceptron:")
     print(w)
+    print()
     
     plt.figure(2)
     plt.plot(x_hlp, w_line, label='Classification line')
@@ -183,7 +199,7 @@ def leave_one_out_validation():
         res = y - h(w,x)
         if(res == 0):
             matches += 1
-    print(matches)
+    print("Leave-one-out cross validation, perceptron : " + str(matches))
     
 def leave_one_out_validation_helper(x_nodes, y_list):
     match_rate = 0.99
@@ -296,7 +312,7 @@ def logistic_regression():
     w = [0,0,0]
     matches = 0
     counter = 0
-    alpha = 0.5
+    alpha = 1
     size = len(nodes)
     order = [i for i in range(size)]
     
@@ -331,6 +347,7 @@ def logistic_regression():
     x_hlp = [i * 1/size for i in range(0,size+1)]
     for i in range(len(x_hlp)):
         w_line.append(-((w[0]/w[2]) * x_hlp[i] + (w[1]/w[2]) * x_hlp[i]))
+    print("Weight vector logistic regression:")
     print(w)
     
     plt.figure(3)
@@ -370,7 +387,7 @@ def leave_one_out_validation_logistic():
         if(res == 0):
             matches += 1
 
-    print(matches)
+    print("Leave-one-out cross validation, logistic regression: " + str(matches))
     
 def leave_one_out_validation_helper_logistic(x_nodes, y_list):
     match_rate = 0.99
@@ -379,7 +396,7 @@ def leave_one_out_validation_helper_logistic(x_nodes, y_list):
     w = [0,0,0]
     matches = 0
     counter = 0
-    alpha = 0.5
+    alpha = 1
     size = len(x_nodes)
     order = [i for i in range(size)]
     
