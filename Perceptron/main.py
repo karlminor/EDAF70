@@ -349,6 +349,11 @@ def logistic_regression():
         w_line.append(-((w[0]/w[2]) * x_hlp[i] + (w[1]/w[2]) * x_hlp[i]))
     print("Weight vector logistic regression:")
     print(w)
+    print()
+    
+    print("Example set:")
+    for i in range(len(nodes)):
+        print("y =" , y_list[i],", x = " , (nodes[i][0].i, nodes[i][0].v) , (nodes[i][1].i, nodes[i][1].v))
     
     plt.figure(3)
     plt.plot(x_hlp, w_line, label='Classification line')   
